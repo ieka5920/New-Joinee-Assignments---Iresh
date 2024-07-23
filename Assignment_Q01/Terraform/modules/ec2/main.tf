@@ -123,3 +123,7 @@ resource "aws_security_group" "app_sg" {
 resource "aws_eip" "sonarqube_eip" {
   instance = aws_instance.sonarqube.id
 }
+
+resource "aws_eip" "app_eip" {
+  instance = aws_instance.app.id
+}
