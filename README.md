@@ -51,6 +51,9 @@ This repository contains the completed onboarding assignments for CI/CD with Jen
 ## Repository Structure
 ```
 - Assignment_Q01/
+  /Terraform
+  - Infrastructure setup
+  /Jenkins
   - Jenkins pipeline scripts and configuration
 - Assignment_Q02/
   - logCleanup.ps1

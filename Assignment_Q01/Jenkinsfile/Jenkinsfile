@@ -1,0 +1,45 @@
+pipeline {
+    agent any
+    
+    stages {
+        
+        stage('Clear Workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+    
+        stage('Clone Repository') {
+            steps {
+                git branch: 'dev', url: 'https://github.com/ieka5920/AssignmentsQ1.git', credentialsId: 'GitHub_Token'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    def scannerHome = tool 'sonar-scanner'
+                    withSonarQubeEnv('sonar-scanner') {
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=Assignments_q1 -Dsonar.sources=."
+                    }
+                }
+            }
+        }
+        
+        stage('Upload to S3 Artifactory') {
+            steps {
+                sh "aws s3 cp '/var/lib/jenkins/workspace/AssignmentsQ1/index.html' 's3://assignmentsq1/index.html'"
+            }
+        }
+        
+        stage('Deploy to APP Server') {
+            steps {
+                sshagent(['AppServer_Token']) {
+                    sh "scp -o StrictHostKeyChecking=no /var/lib/jenkins/workspace/AssignmentsQ1/index.html ubuntu@54.225.236.159:/var/www/html/"
+                    sh "ssh -o StrictHostKeyChecking=no ubuntu@54.225.236.159 'sudo systemctl restart apache2'"
+                }
+            }
+        }
+
+    }
+}
