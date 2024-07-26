@@ -127,3 +127,7 @@ resource "aws_eip" "sonarqube_eip" {
 resource "aws_eip" "app_eip" {
   instance = aws_instance.app.id
 }
+
+resource "aws_eip" "jenkins_eip" {
+  instance = aws_instance.jenkins.id
+}
